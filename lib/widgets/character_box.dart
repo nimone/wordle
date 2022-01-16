@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 class CharacterBox extends StatelessWidget {
-  final String value;
+  final Color color;
+  final CharacterInput? child;
   const CharacterBox({
     Key? key,
-    this.value = "",
+    this.child,
+    required this.color,
   }) : super(key: key);
 
   @override
@@ -13,30 +15,49 @@ class CharacterBox extends StatelessWidget {
     return Container(
       width: 50,
       height: 50,
+      alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: Colors.grey,
+        color: color,
         borderRadius: BorderRadius.circular(6),
       ),
       margin: const EdgeInsets.all(4),
-      child: TextFormField(
-        initialValue: value,
-        style: const TextStyle(fontSize: 20),
-        autofocus: true,
-        decoration: const InputDecoration(
-          border: OutlineInputBorder(),
+      child: child,
+    );
+  }
+}
+
+class CharacterInput extends StatelessWidget {
+  final String? value;
+  final Function(String) onChange;
+  const CharacterInput({
+    Key? key,
+    this.value = "",
+    required this.onChange,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return TextFormField(
+      initialValue: value,
+      textAlign: TextAlign.center,
+      style: const TextStyle(fontSize: 32),
+      autofocus: true,
+      decoration: const InputDecoration(
+        border: InputBorder.none,
+        focusedBorder: OutlineInputBorder(
+          borderSide: BorderSide(color: Colors.white, width: 3.0),
+          borderRadius: BorderRadius.all(Radius.circular(6)),
         ),
-        inputFormatters: [
-          LengthLimitingTextInputFormatter(1),
-          FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")),
-        ],
-        showCursor: false,
-        enableInteractiveSelection: false,
-        textCapitalization: TextCapitalization.characters,
-        onChanged: (value) {
-          if (value == "") FocusScope.of(context).previousFocus();
-          FocusScope.of(context).nextFocus();
-        },
+        contentPadding: EdgeInsets.symmetric(vertical: 2),
       ),
+      inputFormatters: [
+        LengthLimitingTextInputFormatter(1),
+        FilteringTextInputFormatter.allow(RegExp("[a-zA-Z]")),
+      ],
+      showCursor: false,
+      enableInteractiveSelection: false,
+      textCapitalization: TextCapitalization.characters,
+      onChanged: onChange,
     );
   }
 }
