@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:collection/collection.dart';
 import 'package:wordle/widgets/character_box.dart';
 
 class GameBoard extends StatefulWidget {
@@ -71,26 +70,31 @@ class _GameBoardState extends State<GameBoard> {
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      children: board
-          .mapIndexed((rowIdx, rowVal) => Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: rowVal
-                    .mapIndexed((colIdx, colVal) => CharacterBox(
-                          color: getBoxColor(rowIdx, colIdx),
-                          child: rowIdx == currentRowIdx
-                              ? CharacterInput(
-                                  value: colVal,
-                                  onChange: (val) =>
-                                      handleCharInput(val, colIdx),
-                                )
-                              : Text(
-                                  board[rowIdx][colIdx],
-                                  style: const TextStyle(fontSize: 32),
-                                ),
-                        ))
-                    .toList(),
-              ))
-          .toList(),
+      children: generateBoard(),
     );
+  }
+
+  List<Widget> generateBoard() {
+    List<Widget> result = [];
+    for (var i = 0; i < widget.rows; i++) {
+      List<Widget> newRow = [];
+
+      for (var j = 0; j < widget.columns; j++) {
+        newRow.add(CharacterBox(
+          color: getBoxColor(i, j),
+          child: i == currentRowIdx
+              ? CharacterInput(
+                  value: board[i][j],
+                  onChange: (val) => handleCharInput(val, j),
+                )
+              : Text(board[i][j], style: const TextStyle(fontSize: 32)),
+        ));
+      }
+      result.add(Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: newRow,
+      ));
+    }
+    return result;
   }
 }
