@@ -17,7 +17,7 @@ class GameBoard extends StatefulWidget {
 
 class _GameBoardState extends State<GameBoard> {
   final targetWord = "count";
-  var currentRow = 1;
+  var currentRowIdx = 0;
   late List<List<String>> board;
 
   @override
@@ -29,20 +29,42 @@ class _GameBoardState extends State<GameBoard> {
 
   handleCharInput(String value, int colIdx) {
     if (value == "") {
+      // on backspace jump to previous box & clear the char
       if (colIdx != 0) FocusScope.of(context).previousFocus();
+      setState(() => board[currentRowIdx][colIdx] = "");
       return;
     }
-    board[currentRow][colIdx] = value;
-    if (colIdx + 1 == widget.columns) {
-      checkWord();
+    setState(() => board[currentRowIdx][colIdx] = value);
+
+    final word = board[currentRowIdx].join("");
+    if (word.length == targetWord.length) {
+      checkWord(word);
+      if (currentRowIdx >= widget.rows) {
+        print("Game End");
+      } else {
+        setState(() => currentRowIdx++);
+      }
       return;
     }
+    // jump to next box
     FocusScope.of(context).nextFocus();
   }
 
-  checkWord() {
-    final word = board[currentRow].join("");
+  checkWord(String word) {
     targetWord == word ? print("you win") : print("try again");
+  }
+
+  Color getBoxColor(int rowIdx, int colIdx) {
+    final char = board[rowIdx][colIdx];
+
+    if (rowIdx == currentRowIdx) {
+      return Colors.grey.shade600;
+    } else if (char == targetWord[colIdx]) {
+      return Colors.green;
+    } else if (char != "" && targetWord.contains(char)) {
+      return Colors.orange;
+    }
+    return Colors.grey.shade700;
   }
 
   @override
@@ -54,16 +76,17 @@ class _GameBoardState extends State<GameBoard> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: rowVal
                     .mapIndexed((colIdx, colVal) => CharacterBox(
-                          color: rowIdx + 1 == currentRow
-                              ? Colors.grey.shade600
-                              : Colors.grey.shade700,
-                          child: rowIdx + 1 == currentRow
+                          color: getBoxColor(rowIdx, colIdx),
+                          child: rowIdx == currentRowIdx
                               ? CharacterInput(
                                   value: colVal,
                                   onChange: (val) =>
                                       handleCharInput(val, colIdx),
                                 )
-                              : null,
+                              : Text(
+                                  board[rowIdx][colIdx],
+                                  style: const TextStyle(fontSize: 32),
+                                ),
                         ))
                     .toList(),
               ))

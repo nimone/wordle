@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 
 class CharacterBox extends StatelessWidget {
   final Color color;
-  final CharacterInput? child;
+  final Widget? child;
   const CharacterBox({
     Key? key,
     this.child,

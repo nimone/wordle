@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
           centerTitle: true,
           title: const Text("Wordle"),
         ),
-        body: GameBoard(),
+        body: const GameBoard(),
       ),
     );
   }
