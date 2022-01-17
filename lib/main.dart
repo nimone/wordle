@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wordle/models/board_model.dart';
 import 'package:wordle/widgets/board.dart';
 
 void main(List<String> args) {
@@ -11,6 +12,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final board = BoardModel(targetWord, rows: targetWord.length + 1);
+
     return MaterialApp(
       theme: ThemeData(brightness: Brightness.dark),
       home: Scaffold(
@@ -19,10 +22,7 @@ class MyApp extends StatelessWidget {
           centerTitle: true,
           title: const Text("Wordle"),
         ),
-        body: GameBoard(
-          targetWord,
-          rows: targetWord.length + 1,
-        ),
+        body: GameBoard(board: board),
       ),
     );
   }
