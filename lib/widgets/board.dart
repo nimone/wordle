@@ -2,20 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:wordle/widgets/character_box.dart';
 
 class GameBoard extends StatefulWidget {
-  final int rows;
-  final int columns;
-  const GameBoard({
+  final String targetWord;
+  final int rows, columns;
+  const GameBoard(
+    this.targetWord, {
     Key? key,
-    this.rows = 5,
-    this.columns = 5,
-  }) : super(key: key);
+    int? rows,
+  })  : columns = targetWord.length,
+        rows = rows ?? targetWord.length,
+        super(key: key);
 
   @override
   State<GameBoard> createState() => _GameBoardState();
 }
 
 class _GameBoardState extends State<GameBoard> {
-  final targetWord = "count";
   var currentRowIdx = 0;
   late List<List<String>> board;
 
@@ -36,7 +37,7 @@ class _GameBoardState extends State<GameBoard> {
     setState(() => board[currentRowIdx][colIdx] = value);
 
     final word = board[currentRowIdx].join("");
-    if (word.length == targetWord.length) {
+    if (word.length == widget.targetWord.length) {
       checkWord(word);
       if (currentRowIdx >= widget.rows) {
         print("Game End");
@@ -50,7 +51,7 @@ class _GameBoardState extends State<GameBoard> {
   }
 
   checkWord(String word) {
-    targetWord == word ? print("you win") : print("try again");
+    widget.targetWord == word ? print("you win") : print("try again");
   }
 
   Color getBoxColor(int rowIdx, int colIdx) {
@@ -58,9 +59,9 @@ class _GameBoardState extends State<GameBoard> {
 
     if (rowIdx == currentRowIdx) {
       return Colors.grey.shade600;
-    } else if (char == targetWord[colIdx]) {
+    } else if (char == widget.targetWord[colIdx]) {
       return Colors.green;
-    } else if (char != "" && targetWord.contains(char)) {
+    } else if (char != "" && widget.targetWord.contains(char)) {
       return Colors.orange;
     }
     return Colors.grey.shade700;

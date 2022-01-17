@@ -6,6 +6,7 @@ void main(List<String> args) {
 }
 
 class MyApp extends StatelessWidget {
+  final targetWord = "count";
   const MyApp({Key? key}) : super(key: key);
 
   @override
@@ -18,7 +19,10 @@ class MyApp extends StatelessWidget {
           centerTitle: true,
           title: const Text("Wordle"),
         ),
-        body: const GameBoard(),
+        body: GameBoard(
+          targetWord,
+          rows: targetWord.length + 1,
+        ),
       ),
     );
   }
