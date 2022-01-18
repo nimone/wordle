@@ -4,7 +4,13 @@ import 'package:wordle/widgets/character_box.dart';
 
 class GameBoard extends StatefulWidget {
   final BoardModel board;
-  const GameBoard({Key? key, required this.board}) : super(key: key);
+  final Function() onWin, onLose;
+  const GameBoard({
+    Key? key,
+    required this.board,
+    required this.onWin,
+    required this.onLose,
+  }) : super(key: key);
 
   @override
   State<GameBoard> createState() => _GameBoardState();
@@ -28,9 +34,10 @@ class _GameBoardState extends State<GameBoard> {
 
   handleRowSubmit() {
     if (widget.board.isRowComplete()) {
-      widget.board.isRowTargetWord() ? print("you win") : print("try again");
-      if (widget.board.currentRow >= widget.board.rows) {
-        print("Game End");
+      if (widget.board.isRowTargetWord()) {
+        widget.onWin();
+      } else if (widget.board.currentRow >= widget.board.rows - 1) {
+        widget.onLose();
       } else {
         setState(() => widget.board.moveToNextRow());
       }

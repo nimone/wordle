@@ -1,9 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:wordle/models/board_model.dart';
+import 'package:wordle/widgets/alert_dialog.dart';
 import 'package:wordle/widgets/board.dart';
+import 'package:wordle/widgets/character_box.dart';
 
 void main(List<String> args) {
-  runApp(const MyApp());
+  runApp(
+    MaterialApp(
+      theme: ThemeData(brightness: Brightness.dark),
+      home: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -26,25 +33,61 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData(brightness: Brightness.dark),
-      home: Scaffold(
-        appBar: AppBar(
-          elevation: 0.0,
-          centerTitle: true,
-          title: const Text("Wordle"),
-        ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            GameBoard(board: board),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () => setState(board.reset),
-              child: const Text("Reset"),
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0.0,
+        centerTitle: true,
+        title: const Text("Wordle"),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SingleChildScrollView(
+            child: GameBoard(
+              board: board,
+              onWin: () => showAlertDialog(
+                context,
+                title: "You Guessed The Word!",
+                actionText: "Start New Game?",
+                onAction: () => setState(board.reset),
+                content: [
+                  Text(
+                    board.targetWord.toUpperCase(),
+                    style: const TextStyle(
+                      fontSize: 32,
+                      color: Colors.green,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text("in ${board.currentRow + 1}/${board.rows} guesses"),
+                ],
+              ),
+              onLose: () => showAlertDialog(
+                context,
+                title: "The Secret Word was",
+                actionText: "Try Another Word?",
+                onAction: () => setState(board.reset),
+                content: [
+                  Text(
+                    board.targetWord.toUpperCase(),
+                    style: const TextStyle(
+                      fontSize: 32,
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ],
-        ),
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton.icon(
+            onPressed: () => setState(board.reset),
+            icon: const Icon(Icons.play_arrow_rounded),
+            label: const Text("New Game"),
+          ),
+        ],
       ),
     );
   }
