@@ -29,10 +29,12 @@ class CharacterBox extends StatelessWidget {
 class CharacterInput extends StatelessWidget {
   final String? value;
   final Function(String) onChange;
+  final Function() onSubmit;
   const CharacterInput({
     Key? key,
     this.value = "",
     required this.onChange,
+    required this.onSubmit,
   }) : super(key: key);
 
   @override
@@ -58,6 +60,7 @@ class CharacterInput extends StatelessWidget {
       enableInteractiveSelection: false,
       textCapitalization: TextCapitalization.characters,
       onChanged: onChange,
+      onFieldSubmitted: (value) => onSubmit(),
     );
   }
 }

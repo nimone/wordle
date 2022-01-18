@@ -20,6 +20,13 @@ class _GameBoardState extends State<GameBoard> {
     }
     setState(() => widget.board.add(value, colIdx: colIdx));
 
+    // jump to next box
+    if (colIdx < widget.board.columns - 1) {
+      FocusScope.of(context).nextFocus();
+    }
+  }
+
+  handleRowSubmit() {
     if (widget.board.isRowComplete()) {
       widget.board.isRowTargetWord() ? print("you win") : print("try again");
       if (widget.board.currentRow >= widget.board.rows) {
@@ -29,8 +36,6 @@ class _GameBoardState extends State<GameBoard> {
       }
       return;
     }
-    // jump to next box
-    FocusScope.of(context).nextFocus();
   }
 
   @override
@@ -53,6 +58,7 @@ class _GameBoardState extends State<GameBoard> {
               ? CharacterInput(
                   value: widget.board.state[i][j],
                   onChange: (val) => handleCharInput(val, j),
+                  onSubmit: handleRowSubmit,
                 )
               : Text(
                   widget.board.state[i][j],

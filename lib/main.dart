@@ -45,7 +45,6 @@ class _MyAppState extends State<MyApp> {
             ),
           ],
         ),
-        // TODO: Reset board button
       ),
     );
   }
