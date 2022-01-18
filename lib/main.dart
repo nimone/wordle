@@ -6,14 +6,26 @@ void main(List<String> args) {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  final targetWord = "count";
+class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final board = BoardModel(targetWord, rows: targetWord.length + 1);
+  State<MyApp> createState() => _MyAppState();
+}
 
+class _MyAppState extends State<MyApp> {
+  late final String targetWord;
+  late final BoardModel board;
+
+  @override
+  void initState() {
+    super.initState();
+    targetWord = "count";
+    board = BoardModel(targetWord, rows: targetWord.length + 1);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(brightness: Brightness.dark),
       home: Scaffold(
@@ -22,7 +34,18 @@ class MyApp extends StatelessWidget {
           centerTitle: true,
           title: const Text("Wordle"),
         ),
-        body: GameBoard(board: board),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GameBoard(board: board),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () => setState(board.reset),
+              child: const Text("Reset"),
+            ),
+          ],
+        ),
+        // TODO: Reset board button
       ),
     );
   }

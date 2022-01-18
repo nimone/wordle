@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class BoardModel {
-  final List<List<String>> state;
+  List<List<String>> state;
   final String targetWord;
   final int rows, columns;
   var currentRow = 0;
@@ -24,6 +24,14 @@ class BoardModel {
   }
 
   moveToNextRow() => currentRow++;
+
+  reset() {
+    state = List.generate(
+      rows,
+      (i) => List.generate(columns, (j) => ""),
+    );
+    currentRow = 0;
+  }
 
   bool isRowComplete({int? rowIdx}) {
     return state[rowIdx ?? currentRow].join("").length == columns;
