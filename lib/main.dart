@@ -4,7 +4,6 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:wordle/controllers/board_controller.dart';
-import 'package:wordle/widgets/alert_dialog.dart';
 import 'package:wordle/widgets/board.dart';
 import 'package:get/get.dart';
 
@@ -49,48 +48,63 @@ class MyApp extends StatelessWidget {
               : Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    Obx(() => Text("${board.targetWord}")),
                     SingleChildScrollView(
                       child: GameBoard(
-                        onWin: () => showAlertDialog(
-                          context,
+                        onWin: () => Get.defaultDialog(
                           title: "You Guessed The Word!",
-                          actionText: "Start New Game?",
-                          onAction: () async => board.reset(
-                            await getRandomWord(wordLength),
-                            rows: wordLength + 1,
-                          ),
-                          content: [
-                            Text(
-                              board.targetWord.toUpperCase(),
-                              style: const TextStyle(
-                                fontSize: 32,
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
+                          content: Column(
+                            children: [
+                              Text(
+                                board.targetWord.toUpperCase(),
+                                style: const TextStyle(
+                                  fontSize: 32,
+                                  color: Colors.green,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                            const SizedBox(height: 10),
-                            Text(
-                                "in ${board.currentRow + 1}/${board.rows} guesses"),
-                          ],
+                              const SizedBox(height: 8),
+                              Text(
+                                  "in ${board.currentRow + 1}/${board.rows} guesses"),
+                            ],
+                          ),
+                          confirm: ElevatedButton(
+                            onPressed: () async {
+                              board.reset(
+                                await getRandomWord(wordLength),
+                                rows: wordLength + 1,
+                              );
+                              Get.back();
+                            },
+                            child: const Text("Start New Game?"),
+                          ),
+                          radius: 10,
                         ),
-                        onLose: () => showAlertDialog(
-                          context,
+                        onLose: () => Get.defaultDialog(
                           title: "The Secret Word was",
-                          actionText: "Try Another Word?",
-                          onAction: () async => board.reset(
-                            await getRandomWord(wordLength),
-                            rows: wordLength + 1,
-                          ),
-                          content: [
-                            Text(
-                              board.targetWord.toUpperCase(),
-                              style: const TextStyle(
-                                fontSize: 32,
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
+                          content: Column(
+                            children: [
+                              Text(
+                                board.targetWord.toUpperCase(),
+                                style: const TextStyle(
+                                  fontSize: 32,
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
+                          confirm: ElevatedButton(
+                            onPressed: () async {
+                              board.reset(
+                                await getRandomWord(wordLength),
+                                rows: wordLength + 1,
+                              );
+                              Get.back();
+                            },
+                            child: const Text("Try Another Word?"),
+                          ),
+                          radius: 10,
                         ),
                       ),
                     ),
