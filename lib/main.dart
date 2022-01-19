@@ -37,6 +37,12 @@ class MyApp extends StatelessWidget {
         elevation: 0.0,
         centerTitle: true,
         title: const Text("Wordle"),
+        leading: GestureDetector(
+          onTap: () => Get.changeTheme(
+            Get.isDarkMode ? ThemeData.light() : ThemeData.dark(),
+          ),
+          child: const Icon(Icons.light_mode),
+        ),
       ),
       body: FutureBuilder(
         future: getRandomWord(wordLength).then(
@@ -117,10 +123,12 @@ class MyApp extends StatelessWidget {
                       children: [
                         Obx(
                           () => ElevatedButton.icon(
-                            onPressed: () async => board.reset(
-                              await getRandomWord(wordLength),
-                              rows: wordLength + 1,
-                            ),
+                            onPressed: () async => board.currentRow > 0
+                                ? board.reset(
+                                    await getRandomWord(wordLength),
+                                    rows: wordLength + 1,
+                                  )
+                                : null,
                             icon: const Icon(Icons.play_arrow_rounded),
                             label: const Text("New Game"),
                             style: ButtonStyle(

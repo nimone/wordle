@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:get/get.dart';
 
 class CharacterBox extends StatelessWidget {
   final Color color;
@@ -44,13 +45,16 @@ class CharacterInput extends StatelessWidget {
       textAlign: TextAlign.center,
       style: const TextStyle(fontSize: 32),
       autofocus: true,
-      decoration: const InputDecoration(
+      decoration: InputDecoration(
         border: InputBorder.none,
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.white, width: 3.0),
-          borderRadius: BorderRadius.all(Radius.circular(6)),
+          borderSide: BorderSide(
+            color: Get.isDarkMode ? Colors.white : Colors.grey.shade600,
+            width: 3.0,
+          ),
+          borderRadius: const BorderRadius.all(Radius.circular(6)),
         ),
-        contentPadding: EdgeInsets.symmetric(vertical: 2),
+        contentPadding: const EdgeInsets.symmetric(vertical: 2),
       ),
       inputFormatters: [
         LengthLimitingTextInputFormatter(1),

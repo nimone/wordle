@@ -48,12 +48,12 @@ class BoardController extends GetxController {
     final char = state[rowIdx][colIdx];
 
     if (rowIdx == currentRow.value) {
-      return Colors.grey.shade600;
+      return Get.isDarkMode ? Colors.grey.shade600 : Colors.grey.shade400;
     } else if (char == targetWord.value[colIdx]) {
       return Colors.green;
     } else if (char != "" && targetWord.contains(char)) {
       return Colors.orange;
     }
-    return Colors.grey.shade700;
+    return Get.isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300;
   }
 }
