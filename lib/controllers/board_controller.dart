@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:wordle/core/random_word.dart';
 
 class BoardController extends GetxController {
   RxList<List<String>> state;
@@ -55,5 +56,70 @@ class BoardController extends GetxController {
       return Colors.orange;
     }
     return Get.isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300;
+  }
+
+  handleRowSubmit() {
+    if (isRowComplete()) {
+      if (isRowTargetWord()) {
+        Get.defaultDialog(
+          title: "You Guessed The Word!",
+          content: Column(
+            children: [
+              Text(
+                targetWord.toUpperCase(),
+                style: const TextStyle(
+                  fontSize: 32,
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Text("in ${currentRow + 1}/$rows guesses"),
+            ],
+          ),
+          confirm: ElevatedButton(
+            onPressed: () async {
+              reset(
+                await getRandomWord(columns),
+                rows: columns + 1,
+              );
+              Get.back();
+            },
+            child: const Text("Start New Game?"),
+          ),
+          radius: 10,
+        );
+      } else if (currentRow >= rows - 1) {
+        Get.defaultDialog(
+          title: "The Secret Word was",
+          content: Column(
+            children: [
+              Text(
+                targetWord.toUpperCase(),
+                style: const TextStyle(
+                  fontSize: 32,
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          confirm: ElevatedButton(
+            onPressed: () async {
+              reset(
+                await getRandomWord(columns),
+                rows: columns + 1,
+              );
+              Get.back();
+            },
+            child: const Text("Try Another Word?"),
+          ),
+          radius: 10,
+        );
+      } else {
+        moveToNextRow();
+      }
+      return;
+    }
   }
 }

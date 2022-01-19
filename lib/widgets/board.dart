@@ -4,13 +4,8 @@ import 'package:wordle/controllers/board_controller.dart';
 import 'package:wordle/widgets/character_box.dart';
 
 class GameBoard extends StatelessWidget {
-  final Function() onWin, onLose;
   final BoardController board = Get.find();
-  GameBoard({
-    Key? key,
-    required this.onWin,
-    required this.onLose,
-  }) : super(key: key);
+  GameBoard({Key? key}) : super(key: key);
 
   handleCharInput(BuildContext context, String value, int colIdx) {
     if (value == "") {
@@ -24,19 +19,6 @@ class GameBoard extends StatelessWidget {
     // jump to next box
     if (colIdx < board.columns - 1) {
       FocusScope.of(context).nextFocus();
-    }
-  }
-
-  handleRowSubmit() {
-    if (board.isRowComplete()) {
-      if (board.isRowTargetWord()) {
-        onWin();
-      } else if (board.currentRow >= board.rows - 1) {
-        onLose();
-      } else {
-        board.moveToNextRow();
-      }
-      return;
     }
   }
 
@@ -62,7 +44,7 @@ class GameBoard extends StatelessWidget {
               ? CharacterInput(
                   value: board.state[i][j],
                   onChange: (val) => handleCharInput(context, val, j),
-                  onSubmit: handleRowSubmit,
+                  onSubmit: board.handleRowSubmit,
                 )
               : Text(
                   board.state[i][j],

@@ -1,9 +1,7 @@
-import 'dart:convert';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:wordle/controllers/board_controller.dart';
+import 'package:wordle/core/random_word.dart';
 import 'package:wordle/widgets/board.dart';
 import 'package:get/get.dart';
 
@@ -22,13 +20,6 @@ void main(List<String> args) {
 class MyApp extends StatelessWidget {
   final wordLength = 5;
   const MyApp({Key? key}) : super(key: key);
-
-  Future<String> getRandomWord(int length) async {
-    final words = jsonDecode(
-      await rootBundle.loadString("assets/json/words.json"),
-    )[length.toString()];
-    return words[Random().nextInt(words.length)];
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -57,65 +48,8 @@ class MyApp extends StatelessWidget {
               : Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Obx(() => Text("${board.targetWord}")),
                     SingleChildScrollView(
-                      child: GameBoard(
-                        onWin: () => Get.defaultDialog(
-                          title: "You Guessed The Word!",
-                          content: Column(
-                            children: [
-                              Text(
-                                board.targetWord.toUpperCase(),
-                                style: const TextStyle(
-                                  fontSize: 32,
-                                  color: Colors.green,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                  "in ${board.currentRow + 1}/${board.rows} guesses"),
-                            ],
-                          ),
-                          confirm: ElevatedButton(
-                            onPressed: () async {
-                              board.reset(
-                                await getRandomWord(wordLength),
-                                rows: wordLength + 1,
-                              );
-                              Get.back();
-                            },
-                            child: const Text("Start New Game?"),
-                          ),
-                          radius: 10,
-                        ),
-                        onLose: () => Get.defaultDialog(
-                          title: "The Secret Word was",
-                          content: Column(
-                            children: [
-                              Text(
-                                board.targetWord.toUpperCase(),
-                                style: const TextStyle(
-                                  fontSize: 32,
-                                  color: Colors.red,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ],
-                          ),
-                          confirm: ElevatedButton(
-                            onPressed: () async {
-                              board.reset(
-                                await getRandomWord(wordLength),
-                                rows: wordLength + 1,
-                              );
-                              Get.back();
-                            },
-                            child: const Text("Try Another Word?"),
-                          ),
-                          radius: 10,
-                        ),
-                      ),
+                      child: GameBoard(),
                     ),
                     const SizedBox(height: 20),
                     Row(
@@ -139,9 +73,7 @@ class MyApp extends StatelessWidget {
                           ),
                         ),
                         ElevatedButton.icon(
-                          onPressed: () => board.isRowComplete()
-                              ? board.moveToNextRow()
-                              : null,
+                          onPressed: board.handleRowSubmit,
                           icon: const Icon(Icons.keyboard_return),
                           label: const Text("Enter"),
                           style: ButtonStyle(
