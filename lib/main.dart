@@ -3,27 +3,23 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:wordle/models/board_model.dart';
+import 'package:wordle/controllers/board_controller.dart';
 import 'package:wordle/widgets/alert_dialog.dart';
 import 'package:wordle/widgets/board.dart';
+import 'package:get/get.dart';
 
 void main(List<String> args) {
   runApp(
-    MaterialApp(
+    GetMaterialApp(
       theme: ThemeData(brightness: Brightness.dark),
       home: const MyApp(),
     ),
   );
 }
 
-class MyApp extends StatefulWidget {
+class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
-
-class _MyAppState extends State<MyApp> {
   Future<String> getRandomWord() async {
     final words = jsonDecode(
       await rootBundle.loadString("assets/json/words.json"),
@@ -33,6 +29,8 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
+    // final board = Get.put(BoardController());
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
@@ -40,9 +38,10 @@ class _MyAppState extends State<MyApp> {
         title: const Text("Wordle"),
       ),
       body: FutureBuilder(
-          future: getRandomWord()
-              .then((word) => BoardModel(word, rows: word.length + 1)),
-          builder: (context, AsyncSnapshot<BoardModel> snapshot) {
+          future: getRandomWord().then(
+            (word) => Get.put(BoardController(word, rows: word.length + 1)),
+          ),
+          builder: (context, AsyncSnapshot<BoardController> snapshot) {
             if (snapshot.data == null) return const Text("Cannot load game");
 
             final board = snapshot.data!;
@@ -51,12 +50,11 @@ class _MyAppState extends State<MyApp> {
               children: [
                 SingleChildScrollView(
                   child: GameBoard(
-                    board: board,
                     onWin: () => showAlertDialog(
                       context,
                       title: "You Guessed The Word!",
                       actionText: "Start New Game?",
-                      onAction: () => setState(board.reset),
+                      onAction: board.reset,
                       content: [
                         Text(
                           board.targetWord.toUpperCase(),
@@ -75,7 +73,7 @@ class _MyAppState extends State<MyApp> {
                       context,
                       title: "The Secret Word was",
                       actionText: "Try Another Word?",
-                      onAction: () => setState(board.reset),
+                      onAction: board.reset,
                       content: [
                         Text(
                           board.targetWord.toUpperCase(),
@@ -90,10 +88,15 @@ class _MyAppState extends State<MyApp> {
                   ),
                 ),
                 const SizedBox(height: 20),
-                ElevatedButton.icon(
-                  onPressed: () => setState(board.reset),
-                  icon: const Icon(Icons.play_arrow_rounded),
-                  label: const Text("New Game"),
+                Obx(
+                  () => Visibility(
+                    visible: board.currentRow > 0,
+                    child: ElevatedButton.icon(
+                      onPressed: board.reset,
+                      icon: const Icon(Icons.play_arrow_rounded),
+                      label: const Text("New Game"),
+                    ),
+                  ),
                 ),
               ],
             );

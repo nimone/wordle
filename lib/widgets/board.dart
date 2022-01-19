@@ -1,45 +1,40 @@
 import 'package:flutter/material.dart';
-import 'package:wordle/models/board_model.dart';
+import 'package:get/get.dart';
+import 'package:wordle/controllers/board_controller.dart';
 import 'package:wordle/widgets/character_box.dart';
 
-class GameBoard extends StatefulWidget {
-  final BoardModel board;
+class GameBoard extends StatelessWidget {
   final Function() onWin, onLose;
-  const GameBoard({
+  final BoardController board = Get.find();
+  GameBoard({
     Key? key,
-    required this.board,
     required this.onWin,
     required this.onLose,
   }) : super(key: key);
 
-  @override
-  State<GameBoard> createState() => _GameBoardState();
-}
-
-class _GameBoardState extends State<GameBoard> {
-  handleCharInput(String value, int colIdx) {
+  handleCharInput(BuildContext context, String value, int colIdx) {
     if (value == "") {
       // on backspace jump to previous box & clear the char
       if (colIdx != 0) FocusScope.of(context).previousFocus();
-      setState(() => widget.board.remove(colIdx: colIdx));
+      board.remove(colIdx: colIdx);
       return;
     }
-    setState(() => widget.board.add(value, colIdx: colIdx));
+    board.add(value, colIdx: colIdx);
 
     // jump to next box
-    if (colIdx < widget.board.columns - 1) {
+    if (colIdx < board.columns - 1) {
       FocusScope.of(context).nextFocus();
     }
   }
 
   handleRowSubmit() {
-    if (widget.board.isRowComplete()) {
-      if (widget.board.isRowTargetWord()) {
-        widget.onWin();
-      } else if (widget.board.currentRow >= widget.board.rows - 1) {
-        widget.onLose();
+    if (board.isRowComplete()) {
+      if (board.isRowTargetWord()) {
+        onWin();
+      } else if (board.currentRow >= board.rows - 1) {
+        onLose();
       } else {
-        setState(() => widget.board.moveToNextRow());
+        board.moveToNextRow();
       }
       return;
     }
@@ -47,28 +42,30 @@ class _GameBoardState extends State<GameBoard> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: generateBoard(),
+    return Obx(
+      () => Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: generateBoard(context),
+      ),
     );
   }
 
-  List<Widget> generateBoard() {
+  List<Widget> generateBoard(BuildContext context) {
     List<Widget> result = [];
-    for (var i = 0; i < widget.board.rows; i++) {
+    for (var i = 0; i < board.rows; i++) {
       List<Widget> newRow = [];
 
-      for (var j = 0; j < widget.board.columns; j++) {
+      for (var j = 0; j < board.columns; j++) {
         newRow.add(CharacterBox(
-          color: widget.board.getColor(rowIdx: i, colIdx: j),
-          child: i == widget.board.currentRow
+          color: board.getColor(rowIdx: i, colIdx: j),
+          child: i == board.currentRow.value
               ? CharacterInput(
-                  value: widget.board.state[i][j],
-                  onChange: (val) => handleCharInput(val, j),
+                  value: board.state[i][j],
+                  onChange: (val) => handleCharInput(context, val, j),
                   onSubmit: handleRowSubmit,
                 )
               : Text(
-                  widget.board.state[i][j],
+                  board.state[i][j],
                   style: const TextStyle(fontSize: 32),
                 ),
         ));

@@ -1,50 +1,51 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
-class BoardModel {
-  List<List<String>> state;
+class BoardController extends GetxController {
+  RxList<List<String>> state;
   final String targetWord;
   final int rows, columns;
-  var currentRow = 0;
+  var currentRow = 0.obs;
 
-  BoardModel(String targetWord, {int? rows})
+  BoardController(String targetWord, {int? rows})
       : targetWord = targetWord.toUpperCase(),
         columns = targetWord.length,
         rows = rows ?? targetWord.length,
         state = List.generate(
           rows ?? targetWord.length,
           (i) => List.generate(targetWord.length, (j) => ""),
-        );
+        ).obs;
 
   add(String value, {int? rowIdx, required int colIdx}) {
-    state[rowIdx ?? currentRow][colIdx] = value.toUpperCase();
+    state[rowIdx ?? currentRow.value][colIdx] = value.toUpperCase();
   }
 
   remove({int? rowIdx, required int colIdx}) {
-    state[rowIdx ?? currentRow][colIdx] = "";
+    state[rowIdx ?? currentRow.value][colIdx] = "";
   }
 
   moveToNextRow() => currentRow++;
 
   reset() {
-    state = List.generate(
+    state.value = List.generate(
       rows,
       (i) => List.generate(columns, (j) => ""),
-    );
-    currentRow = 0;
+    ).obs;
+    currentRow.value = 0;
   }
 
   bool isRowComplete({int? rowIdx}) {
-    return state[rowIdx ?? currentRow].join("").length == columns;
+    return state[rowIdx ?? currentRow.value].join("").length == columns;
   }
 
   bool isRowTargetWord({int? rowIdx}) {
-    return state[rowIdx ?? currentRow].join("") == targetWord;
+    return state[rowIdx ?? currentRow.value].join("") == targetWord;
   }
 
   Color getColor({required int rowIdx, required int colIdx}) {
     final char = state[rowIdx][colIdx];
 
-    if (rowIdx == currentRow) {
+    if (rowIdx == currentRow.value) {
       return Colors.grey.shade600;
     } else if (char == targetWord[colIdx]) {
       return Colors.green;
