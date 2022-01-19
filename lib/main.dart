@@ -8,6 +8,9 @@ import 'package:wordle/widgets/board.dart';
 import 'package:get/get.dart';
 
 void main(List<String> args) {
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+  );
   runApp(
     GetMaterialApp(
       theme: ThemeData(brightness: Brightness.dark),
