@@ -18,19 +18,18 @@ void main(List<String> args) {
 }
 
 class MyApp extends StatelessWidget {
+  final wordLength = 5;
   const MyApp({Key? key}) : super(key: key);
 
-  Future<String> getRandomWord() async {
+  Future<String> getRandomWord(int length) async {
     final words = jsonDecode(
       await rootBundle.loadString("assets/json/words.json"),
-    )["5"];
+    )[length.toString()];
     return words[Random().nextInt(words.length)];
   }
 
   @override
   Widget build(BuildContext context) {
-    // final board = Get.put(BoardController());
-
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
@@ -38,69 +37,99 @@ class MyApp extends StatelessWidget {
         title: const Text("Wordle"),
       ),
       body: FutureBuilder(
-          future: getRandomWord().then(
-            (word) => Get.put(BoardController(word, rows: word.length + 1)),
-          ),
-          builder: (context, AsyncSnapshot<BoardController> snapshot) {
-            if (snapshot.data == null) return const Text("Cannot load game");
+        future: getRandomWord(wordLength).then(
+          (word) => Get.put(BoardController(word, rows: wordLength + 1)),
+        ),
+        builder: (context, AsyncSnapshot<BoardController> snapshot) {
+          if (snapshot.data == null) return const Text("Cannot load game");
 
-            final board = snapshot.data!;
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SingleChildScrollView(
-                  child: GameBoard(
-                    onWin: () => showAlertDialog(
-                      context,
-                      title: "You Guessed The Word!",
-                      actionText: "Start New Game?",
-                      onAction: board.reset,
-                      content: [
-                        Text(
-                          board.targetWord.toUpperCase(),
-                          style: const TextStyle(
-                            fontSize: 32,
-                            color: Colors.green,
-                            fontWeight: FontWeight.bold,
+          final board = snapshot.data!;
+          return snapshot.connectionState != ConnectionState.done
+              ? const CircularProgressIndicator()
+              : Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    SingleChildScrollView(
+                      child: GameBoard(
+                        onWin: () => showAlertDialog(
+                          context,
+                          title: "You Guessed The Word!",
+                          actionText: "Start New Game?",
+                          onAction: () async => board.reset(
+                            await getRandomWord(wordLength),
+                            rows: wordLength + 1,
+                          ),
+                          content: [
+                            Text(
+                              board.targetWord.toUpperCase(),
+                              style: const TextStyle(
+                                fontSize: 32,
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            Text(
+                                "in ${board.currentRow + 1}/${board.rows} guesses"),
+                          ],
+                        ),
+                        onLose: () => showAlertDialog(
+                          context,
+                          title: "The Secret Word was",
+                          actionText: "Try Another Word?",
+                          onAction: () async => board.reset(
+                            await getRandomWord(wordLength),
+                            rows: wordLength + 1,
+                          ),
+                          content: [
+                            Text(
+                              board.targetWord.toUpperCase(),
+                              style: const TextStyle(
+                                fontSize: 32,
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Obx(
+                          () => ElevatedButton.icon(
+                            onPressed: () async => board.reset(
+                              await getRandomWord(wordLength),
+                              rows: wordLength + 1,
+                            ),
+                            icon: const Icon(Icons.play_arrow_rounded),
+                            label: const Text("New Game"),
+                            style: ButtonStyle(
+                              backgroundColor: board.currentRow > 0
+                                  ? MaterialStateProperty.all(Colors.blue)
+                                  : MaterialStateProperty.all(Colors.grey),
+                            ),
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        Text(
-                            "in ${board.currentRow + 1}/${board.rows} guesses"),
-                      ],
-                    ),
-                    onLose: () => showAlertDialog(
-                      context,
-                      title: "The Secret Word was",
-                      actionText: "Try Another Word?",
-                      onAction: board.reset,
-                      content: [
-                        Text(
-                          board.targetWord.toUpperCase(),
-                          style: const TextStyle(
-                            fontSize: 32,
-                            color: Colors.red,
-                            fontWeight: FontWeight.bold,
+                        ElevatedButton.icon(
+                          onPressed: () => board.isRowComplete()
+                              ? board.moveToNextRow()
+                              : null,
+                          icon: const Icon(Icons.keyboard_return),
+                          label: const Text("Enter"),
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.green),
                           ),
-                        ),
+                        )
                       ],
                     ),
-                  ),
-                ),
-                const SizedBox(height: 20),
-                Obx(
-                  () => Visibility(
-                    visible: board.currentRow > 0,
-                    child: ElevatedButton.icon(
-                      onPressed: board.reset,
-                      icon: const Icon(Icons.play_arrow_rounded),
-                      label: const Text("New Game"),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          }),
+                  ],
+                );
+        },
+      ),
     );
   }
 }

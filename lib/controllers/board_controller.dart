@@ -3,12 +3,12 @@ import 'package:get/get.dart';
 
 class BoardController extends GetxController {
   RxList<List<String>> state;
-  final String targetWord;
+  RxString targetWord;
   final int rows, columns;
   var currentRow = 0.obs;
 
   BoardController(String targetWord, {int? rows})
-      : targetWord = targetWord.toUpperCase(),
+      : targetWord = targetWord.toUpperCase().obs,
         columns = targetWord.length,
         rows = rows ?? targetWord.length,
         state = List.generate(
@@ -26,9 +26,11 @@ class BoardController extends GetxController {
 
   moveToNextRow() => currentRow++;
 
-  reset() {
+  reset(String newTargetWord, {int? rows}) {
+    final columns = newTargetWord.length;
+    targetWord.value = newTargetWord.toUpperCase();
     state.value = List.generate(
-      rows,
+      rows ?? columns,
       (i) => List.generate(columns, (j) => ""),
     ).obs;
     currentRow.value = 0;
@@ -39,7 +41,7 @@ class BoardController extends GetxController {
   }
 
   bool isRowTargetWord({int? rowIdx}) {
-    return state[rowIdx ?? currentRow.value].join("") == targetWord;
+    return state[rowIdx ?? currentRow.value].join("") == targetWord.value;
   }
 
   Color getColor({required int rowIdx, required int colIdx}) {
@@ -47,7 +49,7 @@ class BoardController extends GetxController {
 
     if (rowIdx == currentRow.value) {
       return Colors.grey.shade600;
-    } else if (char == targetWord[colIdx]) {
+    } else if (char == targetWord.value[colIdx]) {
       return Colors.green;
     } else if (char != "" && targetWord.contains(char)) {
       return Colors.orange;
