@@ -85,7 +85,7 @@ class _Key extends StatelessWidget {
       child: GestureDetector(
         onTap: onPressed,
         child: Container(
-          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 5),
+          padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 5),
           margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
           decoration: BoxDecoration(
             color: color,

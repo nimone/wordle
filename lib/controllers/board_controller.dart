@@ -50,6 +50,7 @@ class BoardController extends GetxController {
       (i) => List.generate(columns, (j) => ""),
     ).obs;
     currentRow.value = 0;
+    currentCol.value = 0;
   }
 
   bool isRowComplete({int? rowIdx}) {
@@ -102,7 +103,7 @@ class BoardController extends GetxController {
               Text("in ${currentRow + 1}/$rows guesses"),
             ],
           ),
-          confirm: ElevatedButton(
+          confirm: ElevatedButton.icon(
             onPressed: () async {
               reset(
                 await getRandomWord(columns),
@@ -110,7 +111,8 @@ class BoardController extends GetxController {
               );
               Get.back();
             },
-            child: const Text("Start New Game?"),
+            icon: const Icon(Icons.restart_alt),
+            label: const Text("Start New Game?"),
           ),
           radius: 10,
         );
@@ -129,7 +131,7 @@ class BoardController extends GetxController {
               ),
             ],
           ),
-          confirm: ElevatedButton(
+          confirm: ElevatedButton.icon(
             onPressed: () async {
               reset(
                 await getRandomWord(columns),
@@ -137,7 +139,8 @@ class BoardController extends GetxController {
               );
               Get.back();
             },
-            child: const Text("Try Another Word?"),
+            icon: const Icon(Icons.restart_alt),
+            label: const Text("Try Another Word?"),
           ),
           radius: 10,
         );

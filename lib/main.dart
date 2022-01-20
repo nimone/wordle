@@ -53,7 +53,7 @@ class MyApp extends StatelessWidget {
                   children: [
                     SingleChildScrollView(
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        padding: const EdgeInsets.only(top: 24),
                         child: GameBoard(),
                       ),
                     ),
@@ -89,7 +89,7 @@ class MyApp extends StatelessWidget {
                       ],
                     ),
                     Padding(
-                      padding: const EdgeInsets.all(12.0),
+                      padding: const EdgeInsets.fromLTRB(12, 0, 12, 20),
                       child: Obx(() {
                         // coludn't find another way to update keyboard colors on currentRow change (row submit)
                         print(board.currentRow);
