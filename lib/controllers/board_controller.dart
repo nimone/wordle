@@ -69,7 +69,7 @@ class BoardController extends GetxController {
     } else if (char == targetWord.value[colIdx]) {
       return Colors.green;
     } else if (char != "" && targetWord.contains(char)) {
-      return Colors.orange;
+      return Get.isDarkMode ? Colors.orange : Colors.orange.shade400;
     }
     return Get.isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300;
   }
@@ -77,11 +77,11 @@ class BoardController extends GetxController {
   Color getKeyColor(String keyChar) {
     final isInState = state.any((row) => row.any((char) => keyChar == char));
     if (isInState && targetWord.contains(keyChar)) {
-      return Colors.orange;
+      return Get.isDarkMode ? Colors.orange : Colors.orange.shade400;
     } else if (isInState) {
-      return Colors.grey.shade800;
+      return Get.isDarkMode ? Colors.grey.shade800 : Colors.grey.shade400;
     }
-    return Colors.grey.shade700;
+    return Get.isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300;
   }
 
   handleRowSubmit() {

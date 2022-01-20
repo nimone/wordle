@@ -40,7 +40,9 @@ class KeyBoard extends StatelessWidget {
           child: Row(
             children: [
               _Key(
-                color: Colors.grey.shade600,
+                color: Get.isDarkMode
+                    ? Colors.grey.shade600
+                    : Colors.grey.shade300,
                 onPressed: () => board.handleRowSubmit(),
                 child: const Icon(
                   Icons.keyboard_return,
@@ -53,7 +55,9 @@ class KeyBoard extends StatelessWidget {
                     child: Text(k, style: const TextStyle(fontSize: 16)),
                   )),
               _Key(
-                color: Colors.grey.shade600,
+                color: Get.isDarkMode
+                    ? Colors.grey.shade600
+                    : Colors.grey.shade300,
                 onPressed: () => board.remove(),
                 child: const Icon(
                   Icons.backspace,

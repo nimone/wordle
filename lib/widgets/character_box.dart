@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class CharacterBox extends StatelessWidget {
   final bool isFocused;
@@ -25,7 +26,9 @@ class CharacterBox extends StatelessWidget {
           color: color,
           borderRadius: BorderRadius.circular(6),
           border: Border.all(
-            color: isFocused ? Colors.white : Colors.transparent,
+            color: isFocused
+                ? (Get.isDarkMode ? Colors.white : Colors.black54)
+                : Colors.transparent,
             width: 3,
           ),
         ),
