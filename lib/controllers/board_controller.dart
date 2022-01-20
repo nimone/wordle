@@ -7,6 +7,7 @@ class BoardController extends GetxController {
   RxString targetWord;
   final int rows, columns;
   var currentRow = 0.obs;
+  var currentCol = 0.obs;
 
   BoardController(String targetWord, {int? rows})
       : targetWord = targetWord.toUpperCase().obs,
@@ -17,12 +18,26 @@ class BoardController extends GetxController {
           (i) => List.generate(targetWord.length, (j) => ""),
         ).obs;
 
-  add(String value, {int? rowIdx, required int colIdx}) {
-    state[rowIdx ?? currentRow.value][colIdx] = value.toUpperCase();
+  add(String value, {int? rowIdx, int? colIdx}) {
+    rowIdx ??= currentRow.value;
+    colIdx ??= currentCol.value;
+
+    state[rowIdx][colIdx] = value.toUpperCase();
+    state.refresh(); // apparently updating a list index isn't reactive
+    if (currentCol < columns - 1) currentCol++;
   }
 
-  remove({int? rowIdx, required int colIdx}) {
-    state[rowIdx ?? currentRow.value][colIdx] = "";
+  remove({int? rowIdx, int? colIdx}) {
+    rowIdx ??= currentRow.value;
+    colIdx ??= currentCol.value;
+
+    if (state[rowIdx][colIdx] == "" && colIdx > 0) {
+      state[rowIdx][colIdx - 1] = "";
+    } else {
+      state[rowIdx][colIdx] = "";
+    }
+    state.refresh();
+    if (currentCol > 0) currentCol--;
   }
 
   moveToNextRow() => currentRow++;
@@ -45,7 +60,7 @@ class BoardController extends GetxController {
     return state[rowIdx ?? currentRow.value].join("") == targetWord.value;
   }
 
-  Color getColor({required int rowIdx, required int colIdx}) {
+  Color getBoxColor({required int rowIdx, required int colIdx}) {
     final char = state[rowIdx][colIdx];
 
     if (rowIdx == currentRow.value) {
@@ -56,6 +71,16 @@ class BoardController extends GetxController {
       return Colors.orange;
     }
     return Get.isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300;
+  }
+
+  Color getKeyColor(String keyChar) {
+    final isInState = state.any((row) => row.any((char) => keyChar == char));
+    if (isInState && targetWord.contains(keyChar)) {
+      return Colors.orange;
+    } else if (isInState) {
+      return Colors.grey.shade800;
+    }
+    return Colors.grey.shade700;
   }
 
   handleRowSubmit() {
@@ -118,6 +143,7 @@ class BoardController extends GetxController {
         );
       } else {
         moveToNextRow();
+        currentCol.value = 0;
       }
       return;
     }

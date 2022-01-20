@@ -4,6 +4,7 @@ import 'package:wordle/controllers/board_controller.dart';
 import 'package:wordle/core/random_word.dart';
 import 'package:wordle/widgets/board.dart';
 import 'package:get/get.dart';
+import 'package:wordle/widgets/keyboard.dart';
 
 void main(List<String> args) {
   SystemChrome.setSystemUIOverlayStyle(
@@ -46,12 +47,16 @@ class MyApp extends StatelessWidget {
           return snapshot.connectionState != ConnectionState.done
               ? const CircularProgressIndicator()
               : Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.max,
                   children: [
                     SingleChildScrollView(
-                      child: GameBoard(),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 20),
+                        child: GameBoard(),
+                      ),
                     ),
-                    const SizedBox(height: 20),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
@@ -80,8 +85,12 @@ class MyApp extends StatelessWidget {
                             backgroundColor:
                                 MaterialStateProperty.all(Colors.green),
                           ),
-                        )
+                        ),
                       ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: KeyBoard(),
                     ),
                   ],
                 );
