@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:wordle/controllers/board_controller.dart';
+import 'package:wordle/controllers/theme_controller.dart';
 import 'package:wordle/core/random_word.dart';
 import 'package:wordle/widgets/board.dart';
 import 'package:get/get.dart';
@@ -24,16 +25,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Get.put(ThemeController());
+
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
         centerTitle: true,
         title: const Text("Wordle"),
-        leading: GestureDetector(
-          onTap: () => Get.changeTheme(
-            Get.isDarkMode ? ThemeData.light() : ThemeData.dark(),
+        leading: Obx(
+          () => GestureDetector(
+            onTap: () => theme.toggleDarkMode(),
+            child: Icon(
+                theme.isDarkMode.value ? Icons.light_mode : Icons.dark_mode),
           ),
-          child: const Icon(Icons.light_mode),
         ),
       ),
       body: FutureBuilder(
@@ -54,7 +58,9 @@ class MyApp extends StatelessWidget {
                     SingleChildScrollView(
                       child: Padding(
                         padding: const EdgeInsets.only(top: 24),
-                        child: GameBoard(),
+                        child: Obx(() => GameBoard(
+                              isDarkMode: theme.isDarkMode.value,
+                            )),
                       ),
                     ),
                     Row(
@@ -93,7 +99,7 @@ class MyApp extends StatelessWidget {
                       child: Obx(() {
                         // coludn't find another way to update keyboard colors on currentRow change (row submit)
                         print(board.currentRow);
-                        return KeyBoard();
+                        return KeyBoard(isDarkMode: theme.isDarkMode.value);
                       }),
                     ),
                   ],

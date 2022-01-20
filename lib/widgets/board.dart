@@ -5,7 +5,8 @@ import 'package:wordle/widgets/character_box.dart';
 
 class GameBoard extends StatelessWidget {
   final BoardController board = Get.find();
-  GameBoard({Key? key}) : super(key: key);
+  final bool isDarkMode;
+  GameBoard({Key? key, this.isDarkMode = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,8 @@ class GameBoard extends StatelessWidget {
               board.currentRow.value == i ? board.currentCol.value = j : null,
           isFocused:
               (board.currentRow.value == i && board.currentCol.value == j),
-          color: board.getBoxColor(rowIdx: i, colIdx: j),
+          color:
+              board.getBoxColor(rowIdx: i, colIdx: j, isDarkMode: isDarkMode),
           child: Text(
             board.state[i][j],
             style: const TextStyle(fontSize: 32),

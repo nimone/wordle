@@ -61,27 +61,31 @@ class BoardController extends GetxController {
     return state[rowIdx ?? currentRow.value].join("") == targetWord.value;
   }
 
-  Color getBoxColor({required int rowIdx, required int colIdx}) {
+  Color getBoxColor({
+    required int rowIdx,
+    required int colIdx,
+    required bool isDarkMode,
+  }) {
     final char = state[rowIdx][colIdx];
 
     if (rowIdx == currentRow.value) {
-      return Get.isDarkMode ? Colors.grey.shade600 : Colors.grey.shade400;
+      return isDarkMode ? Colors.grey.shade600 : Colors.grey.shade400;
     } else if (char == targetWord.value[colIdx]) {
       return Colors.green;
     } else if (char != "" && targetWord.contains(char)) {
-      return Get.isDarkMode ? Colors.orange : Colors.orange.shade400;
+      return isDarkMode ? Colors.orange : Colors.orange.shade400;
     }
-    return Get.isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300;
+    return isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300;
   }
 
-  Color getKeyColor(String keyChar) {
+  Color getKeyColor(String keyChar, {required bool isDarkMode}) {
     final isInState = state.any((row) => row.any((char) => keyChar == char));
     if (isInState && targetWord.contains(keyChar)) {
-      return Get.isDarkMode ? Colors.orange : Colors.orange.shade400;
+      return isDarkMode ? Colors.orange : Colors.orange.shade400;
     } else if (isInState) {
-      return Get.isDarkMode ? Colors.grey.shade800 : Colors.grey.shade400;
+      return isDarkMode ? Colors.grey.shade800 : Colors.grey.shade400;
     }
-    return Get.isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300;
+    return isDarkMode ? Colors.grey.shade700 : Colors.grey.shade300;
   }
 
   handleRowSubmit() {

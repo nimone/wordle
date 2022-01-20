@@ -4,7 +4,8 @@ import 'package:get/get.dart';
 
 class KeyBoard extends StatelessWidget {
   final BoardController board = Get.find();
-  KeyBoard({Key? key}) : super(key: key);
+  final bool isDarkMode;
+  KeyBoard({Key? key, this.isDarkMode = false}) : super(key: key);
 
   static final keyrow1 = "qwertyuiop".toUpperCase().split("");
   static final keyrow2 = "asdfghjkl".toUpperCase().split("");
@@ -17,7 +18,7 @@ class KeyBoard extends StatelessWidget {
         Row(
           children: keyrow1
               .map((k) => _Key(
-                    color: board.getKeyColor(k),
+                    color: board.getKeyColor(k, isDarkMode: isDarkMode),
                     onPressed: () => board.add(k),
                     child: Text(k, style: const TextStyle(fontSize: 16)),
                   ))
@@ -28,7 +29,7 @@ class KeyBoard extends StatelessWidget {
           child: Row(
             children: [
               ...keyrow2.map((k) => _Key(
-                    color: board.getKeyColor(k),
+                    color: board.getKeyColor(k, isDarkMode: isDarkMode),
                     onPressed: () => board.add(k),
                     child: Text(k, style: const TextStyle(fontSize: 16)),
                   )),
@@ -40,9 +41,7 @@ class KeyBoard extends StatelessWidget {
           child: Row(
             children: [
               _Key(
-                color: Get.isDarkMode
-                    ? Colors.grey.shade600
-                    : Colors.grey.shade300,
+                color: isDarkMode ? Colors.grey.shade600 : Colors.grey.shade300,
                 onPressed: () => board.handleRowSubmit(),
                 child: const Icon(
                   Icons.keyboard_return,
@@ -50,14 +49,12 @@ class KeyBoard extends StatelessWidget {
                 ),
               ),
               ...keyrow3.map((k) => _Key(
-                    color: board.getKeyColor(k),
+                    color: board.getKeyColor(k, isDarkMode: isDarkMode),
                     onPressed: () => board.add(k),
                     child: Text(k, style: const TextStyle(fontSize: 16)),
                   )),
               _Key(
-                color: Get.isDarkMode
-                    ? Colors.grey.shade600
-                    : Colors.grey.shade300,
+                color: isDarkMode ? Colors.grey.shade600 : Colors.grey.shade300,
                 onPressed: () => board.remove(),
                 child: const Icon(
                   Icons.backspace,
