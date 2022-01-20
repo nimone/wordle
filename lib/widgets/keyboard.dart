@@ -17,6 +17,7 @@ class KeyBoard extends StatelessWidget {
         Row(
           children: keyrow1
               .map((k) => _Key(
+                    color: board.getKeyColor(k),
                     onPressed: () => board.add(k),
                     child: Text(k, style: const TextStyle(fontSize: 16)),
                   ))
@@ -27,6 +28,7 @@ class KeyBoard extends StatelessWidget {
           child: Row(
             children: [
               ...keyrow2.map((k) => _Key(
+                    color: board.getKeyColor(k),
                     onPressed: () => board.add(k),
                     child: Text(k, style: const TextStyle(fontSize: 16)),
                   )),
@@ -46,6 +48,7 @@ class KeyBoard extends StatelessWidget {
                 ),
               ),
               ...keyrow3.map((k) => _Key(
+                    color: board.getKeyColor(k),
                     onPressed: () => board.add(k),
                     child: Text(k, style: const TextStyle(fontSize: 16)),
                   )),
@@ -68,10 +71,10 @@ class KeyBoard extends StatelessWidget {
 class _Key extends StatelessWidget {
   final Function() onPressed;
   final Widget child;
-  final Color? color;
+  final Color color;
   const _Key({
     Key? key,
-    this.color,
+    this.color = Colors.grey,
     required this.onPressed,
     required this.child,
   }) : super(key: key);
@@ -85,7 +88,7 @@ class _Key extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 5),
           margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 3),
           decoration: BoxDecoration(
-            color: color ?? Colors.grey.shade700,
+            color: color,
             borderRadius: BorderRadius.circular(6),
             boxShadow: const [
               BoxShadow(

@@ -90,7 +90,11 @@ class MyApp extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.all(12.0),
-                      child: KeyBoard(),
+                      child: Obx(() {
+                        // coludn't find another way to update keyboard colors on currentRow change (row submit)
+                        print(board.currentRow);
+                        return KeyBoard();
+                      }),
                     ),
                   ],
                 );
