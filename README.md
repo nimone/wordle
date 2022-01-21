@@ -1,16 +1,28 @@
-# wordle
+# Wordle 🔠
+A Wordle game implementation in flutter.
 
-A new Flutter project.
+**Screenshot (Dark):**
+![win condition](https://i.ibb.co/2k6kKxC/Screenshot-1642742899.png)
 
-## Getting Started
+![game board - dark](https://i.ibb.co/XYjPLQ3/Screenshot-1642742980.png)
 
-This project is a starting point for a Flutter application.
+**Screenshot (light):**
+![game board - light](https://i.ibb.co/y8k5Py2/Screenshot-1642743153.png)
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+## Try yourself
+1. Clone this repo
+```bash
+git clone https://github.com/nimone/wordle && cd wordle
+```
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+2. Install project dependecies
+```bash
+flutter pub get
+```
+
+3. Build the project and start in emulator/simulator
+```bash
+flutter run
+```
