@@ -1,8 +1,6 @@
 # Wordle 🔠
 A Wordle game implementation in flutter.
 
-**Screenshot:**
-
 <img src="https://i.ibb.co/2k6kKxC/Screenshot-1642742899.png" width="300">
 
 <img src="https://i.ibb.co/XYjPLQ3/Screenshot-1642742980.png" width="300">
