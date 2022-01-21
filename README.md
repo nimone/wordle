@@ -1,13 +1,13 @@
 # Wordle 🔠
 A Wordle game implementation in flutter.
 
-**Screenshot (Dark):**
-![win condition](https://i.ibb.co/2k6kKxC/Screenshot-1642742899.png)
+**Screenshot:**
 
-![game board - dark](https://i.ibb.co/XYjPLQ3/Screenshot-1642742980.png)
+<img src="https://i.ibb.co/2k6kKxC/Screenshot-1642742899.png" width="300">
 
-**Screenshot (light):**
-![game board - light](https://i.ibb.co/y8k5Py2/Screenshot-1642743153.png)
+<img src="https://i.ibb.co/XYjPLQ3/Screenshot-1642742980.png" width="300">
+
+<img src="https://i.ibb.co/y8k5Py2/Screenshot-1642743153.png" width="300">
 
 ---
 
